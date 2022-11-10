@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.catte</groupId>
+  <artifactId>catte</artifactId>
+  <version>1.0</version>
+  <packaging>firebase-gar</packaging>
+  
+  <build>
+    <plugins> 
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+            <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.cubeia.tools</groupId>
+        <artifactId>archive-plugin</artifactId>
+        <version>1.10</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>com.cubeia.tools</groupId>
+        <artifactId>firebase-maven-plugin</artifactId>
+        <version>1.8.0-CE</version>
+      </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.4.3</version>
+            <configuration>
+                <encoding>${project.build.sourceEncoding}</encoding>
+            </configuration>
+        </plugin>        
+    </plugins>
+  </build>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>cubeia-nexus</id>
+      <name>Cubeia Repo</name>
+      <url>8.8.8.8.8</url>
+    </pluginRepository>
+  </pluginRepositories>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+</project>

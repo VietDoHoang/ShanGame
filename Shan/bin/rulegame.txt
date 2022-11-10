@@ -1,0 +1,34 @@
+﻿luồng game ( 2-7 người ) , 52 lá
+Shan > xám cô >3 đầu người , thùng phá sảnh > bài thường
+Bích > Rô > Cơ > Tép
+Note : 
+- chia 2 lượt 
+ + lượt đầu 2 lá 
+ + lượt sau 1 lá
+1, Shan 
+-2 lá đầu có tổng điểm 8 hoặc 9
+- tỉ lệ ăn 1 hoặc 2
+- x2 khi cùng chất hoặc 1 đôi
+ note : 
+ + bằng điểm so sánh theo cây to nhất rank 2,3,4...,K,A
+ + không thì theo chất 
+2, Xám 
+- 3 lá giống nhau
+- ăn 5
+3, 3 con đầu người (đĩ) (J,Q,K)
+-tỉ lệ ăn 3 hoặc 5, cùng chất thì x5
+note 
++ cùng bộ đầu người thì hòa
+4, Thùng phá sảnh 
+-2 lá liền nhau cùng chất ( trừ KA2)
+- tỉ lệ x5
+ note :
+ +cùng bộ cùng điểm thì so chất
+5, shankoemee 
+- bài tính điểm
+- x2 khi bài có đúng 2 quân và là cùng chất or đôi
+- x3 khi  quân cùng chất
+ note 
+ + điểm bằng nhau thì so sánh số lá , ít hơn thì thắng
+ + = điểm , = lá , so sánh cây cao nhất
+ + = điểm , = lá, = cây cao nhất , so sánh chất 

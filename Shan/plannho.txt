@@ -1,0 +1,18 @@
+﻿Giai đoạn 
+	1. Readdy
+	2 Start Game
+	*set barker (chọn người làm cái, nếu đủ tiền thì tiếp tục , nếu không đủ 
+tiền thì chuyển quyền về cho server ) . 
+	nếu banker đang là server mà người chơi xin làm thì đủ tiền là được
+	Nếu banker đang là người chơi thì người xin phải nhiều tiền hơn và
+	có số chip lớn hơn tối thiểu
+	* Chọn tiền cược 
+	* chia bài ( mỗi người 2 lá)
+	* gửi thông báo nếu có người là Shan
+	* nếu barker là Shan thì chia ra luôn
+	3 sendFinish
+	* checkwin
+	* gửi thông báo chiến thắng
+	* đổi barker nếu người chơi hết tiền hoặc có người yêu cầu
+	* reset lai table 
+

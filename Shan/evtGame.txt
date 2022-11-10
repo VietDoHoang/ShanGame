@@ -1,0 +1,14 @@
+﻿evt( sự kiện )
+- DATA_FINISH 
+- DATA_READY 
+- DATA_LEFT_TABLE
+- DATA_EXIT_GAME 
+- DATA_BETS_MONEY
+- DATA_START_GAME ( chia 2 trước 2 lá )
+ note : tất cả ngửa bài xem điểm nếu barker nhận được pokdeng
+- DATA_TAKE_CARD ( nhận thêm 1 lá )
+- DATA_REFUSE_CARD
+- DATA_EQUAL_CARD 
+- DATA_REQUEST_BECOME_BANKER
+
+

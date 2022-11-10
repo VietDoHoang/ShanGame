@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game-definition id="8012">
+	<name>Catte</name>
+	<classname>net.catte.GameImpl</classname>
+        <activator>net.catte.ActivatorImpl</activator>
+	<version>1.0</version>
+</game-definition>
