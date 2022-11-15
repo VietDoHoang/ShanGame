@@ -10,10 +10,11 @@ public class EVT {
 	public static final String CLIENT_SYSTEM_CHAT 			= "schat";
 	public static final String LIST_TABLE_VIEW 				= "ltv";
 	public static final String CLIENT_DISCONNECT			= "disltable";
-	public static final String CLIENT_FINISHED				= "finishedGame";
 	public static final String CLIENT_NEW_BANKER			= "NewBanker";
+	public static final String CLIENT_FINISHED				= "clientFinished";
 	
-	
+	public static final String AUTO_CANCEL_THREE_CARD		="autoCancel3Card";
+	public static final String AUTO_BETS_MONEY				= "autoBetsMoney";
 	public static final String AUTO_START_GAME				= "autoStartGame";
 	public static final String PLAY_TIME_OUT				= "playerTimeOut";
 	public static final String DEAL_CARD_TIME_OUT			= "dealCardTimeOut";
@@ -26,6 +27,8 @@ public class EVT {
 	public static final String DATA_TAKE_CARD				="takeCard";
 	public static final String DATA_SEND_REQUEST_BECOME_BANKER	="requestBecomeBanker";
 	public static final String DATA_BETS_MONEY				="betsMoney";
+	public static final String DATA_SECOND_TURN				="secondTurn";
+	public static final String DATA_ADD_REQUEST_BECOME_BANKER	="addRequestBecomeBanker";
 	
 	
 	public static final String OBJECT_AUTO_START			="objectAuToStart";

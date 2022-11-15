@@ -30,12 +30,10 @@ public class Processor implements GameProcessor{
 		JsonObject je = (JsonObject)parser.parse(message);
 		CatteBoard board = (CatteBoard)table.getGameState().getState();
 		_logger.info("evt comming");
+		//{"evt":"bet","ag":100}
 		if(je.get("evt") !=null) {
 			String evt = je.get("evt").getAsString();
 			switch (evt) {
-			case EVT.DATA_FINISH:		
-				board.finishedGame(this.game.getServiceContract(), table);
-				break;
 			case EVT.DATA_READDY:
 				board.ReadyTable(this.game.getServiceContract(), table, action.getPlayerId());
 				break;
@@ -46,29 +44,29 @@ public class Processor implements GameProcessor{
 				board.KickTable(action, table);  
 				break;
 			case EVT.DATA_BETS_MONEY:
-				if (action.getPlayerId() == board.getPlayerId()) {
-				long betmoney = Integer.parseInt(new String(action.getData().array()));
+				//{"evt","username","betsmoney"}
+				long betmoney = je.get("betmoney").getAsLong();
 				board.betsMoney(betmoney,this.game.getServiceContract(),table,action.getPlayerId());
-				}
-				break;
-			case EVT.DATA_START_GAME:
-				board.startGame(table,this.game.getServiceContract());
 				break;
 			case EVT.DATA_TAKE_CARD:
-				Boolean take = je.get("take").getAsBoolean();
+				//{"evt":"takeCard","take":"Yes/No"}
+				String take = je.get("take").getAsString();
 				board.takeCard(this.game.getServiceContract(),table,action.getPlayerId(),take);
 				break;
 			case EVT.DATA_SEND_REQUEST_BECOME_BANKER:
+				// {"evt:", "userid", "request"}
 				Boolean request = je.get("request").getAsBoolean();
 				board.sendResquestBecomeBanker(this.game.getServiceContract(),table,action.getPlayerId(),request);
 				break;
+			case EVT.DATA_SECOND_TURN:
+				board.secondTurn(this.game.getServiceContract(),table,action);
 			default:
 				break;
 			}
 		}
-		
 	}
 
+	
 	@Override
 	public void handle(GameObjectAction goa, Table table) {
 		// TODO Auto-generated method stub 
@@ -77,16 +75,19 @@ public class Processor implements GameProcessor{
 		String event = data.getEvt();
 		switch (event) {
 		case EVT.AUTO_START_GAME:
-			board.startGame(table, game.getServiceContract());
+			board.startGame(table, game.getServiceContract(), goa);
 			break;
 		case EVT.OBJECT_FINESHED:
 			board.finishedGame(this.game.getServiceContract(), table);
 			break;
-
+		case EVT.AUTO_BETS_MONEY:
+			board.setAutobetMoney();
+		case EVT.AUTO_CANCEL_THREE_CARD:
+			board.autoCancelThreeCard(table, this.game.getServiceContract());
+			
 		default:
 			break;
 		}
 		
 	}
-
 }

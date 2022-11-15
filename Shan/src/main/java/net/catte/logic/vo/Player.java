@@ -26,12 +26,13 @@ public class Player {
     private float LQ0;
     private String displayName;
     private int keyObjectInGame;
-    private long betMoney;
+    private long betMoney=0;
     // config for shan
     private boolean isBarker;
     private boolean isStart;
     private boolean isShan=false;
     private boolean finish=false;
+    private String takeCard;
     private UUID evtSS;
     // config for poker
     private List<Card> ArrCard;
@@ -235,6 +236,12 @@ public class Player {
 	}
 	public void setFinish(boolean round2) {
 		this.finish=round2;
+	}
+	public String isTakeCard() {
+		return takeCard;
+	}
+	public void setTakeCard(String take) {
+		this.takeCard=take;
 	}
 	
 }

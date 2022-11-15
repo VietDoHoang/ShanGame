@@ -51,7 +51,7 @@ public abstract class Board implements Serializable{
 
     public abstract void requestBotLeave(Table table, ServiceContract serviceContract);
 
-    public abstract void startGame(Table table, ServiceContract serviceContract);
+    public abstract void startGame(Table table, ServiceContract serviceContract, GameObjectAction goa);
 
     public abstract void initBoard();
     
@@ -77,6 +77,7 @@ public abstract class Board implements Serializable{
      */
     protected Date idleTime = new Date();
     public final static int TIME_WAIT_START = 5000;
+    public final static int TIME_WAIT_CANCEL_CARD = 5000;
     /**
      * mức cược bàn
      */
@@ -101,6 +102,8 @@ public abstract class Board implements Serializable{
     public int currTurn;
     public int round;
     private boolean flagDestroy = false;
+    private final static int TIME_WAIT_BETS_MONEY = 8000;
+    
     
     public Board() {
         initBoard();
@@ -390,6 +393,11 @@ public abstract class Board implements Serializable{
     public int getPlayerId() {
     	return player_id;
     }
+
+	public void playerTimeout(Table table, ServiceContract serviceContract, EVT evt, int time) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
     

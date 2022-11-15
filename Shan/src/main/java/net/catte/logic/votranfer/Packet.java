@@ -22,7 +22,7 @@ public class Packet implements Serializable{
 	        this.data = data;
 	 }
 
-    public Packet(String evt, int pid, String userName) {
+    public Packet(String evt, int pid, String userame) {
         this.evt = evt;
         this.pid = pid;
         this.userName = userName;
@@ -50,6 +50,22 @@ public class Packet implements Serializable{
     	this.card=card;
     	
     }
+    //packet betsmoney
+    public Packet(String evt, String username, long betmoney) {
+    	this.evt=evt;
+    	this.userName=username;
+    	this.betmoney=betmoney;
+    }
+    // packet listCard
+    public Packet(String evt, List<Card> listcard) {
+    	this.evt=evt;
+    	this.card=listcard;
+    }
+    public Packet(String evt, String username, boolean take) {
+    	this.evt=evt;
+    	this.userName=username;
+    	this.take=take;
+    }
 
     private String evt;
     private String data;
@@ -61,6 +77,9 @@ public class Packet implements Serializable{
     private int Point;
     private long AG;
     private long round;
+    private long betmoney;
+    private boolean take;
+    
     public int getPid() {
         return pid;
     }
