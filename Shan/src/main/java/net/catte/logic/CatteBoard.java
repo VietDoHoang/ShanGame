@@ -82,29 +82,18 @@ public class CatteBoard extends Board implements Serializable {
 			// bat dau van dau
 			round++;
 			gameStatus = gameStatus.STARTED;
+			// chọn người chơi là barker
 			for(Player p: players) {
 				if(p.getUserid()==id_barker) {
 					p.setBarket(true);
 				}
 			}
-			//gui event start bet
-			int numberplayerShan=0;
-			for(Player p : players) {
-				Packet packet = new Packet(EVT.DATA_BETS_MONEY,p.getUsername(),p.getBetMoney());
-				table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
-				if(ShanFunction.check_Shan(p.getArrCard())!=null) {
-					numberplayerShan ++;
-				}
-			}	
-			// chia bài
+			//gui event start bet, chia bài
+			Packet packetStartBet = new Packet(EVT.DATA_START_BETS_MONEY, "start bets");
+			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(players.size(), tableId, packetStartBet));
 			
-			arrCardChia = getRandomCard();
-			divideTurnOneCard();
-			//noti deal Card
-			for(Player p : players) {
-				PacketCard packet = new PacketCard(p.getUsername(), p.getArrCard().size(), p.getArrCard());
-				table.getNotifier().notifyPlayer(p.getUserid(), ShanGameUtil.toDataAction(p.getUserid(), table.getId(), packet));
-			}
+			//check số lương người chơi là SHAN
+			int numberplayerShan=0;
 			
 			// finish game neu barker la pok
 			if(ShanFunction.check_Shan(players.get(getIndexBarker()).getArrCard())!=null){
@@ -459,7 +448,6 @@ public class CatteBoard extends Board implements Serializable {
 		// TODO Auto-generated method stub
 		try {
 			if(gameStatus==gameStatus.FINISHED && checkFinish()) {
-			table.getScheduler().cancelAllScheduledActions();
 			isFinished = true;
 			int indexBarker = 0;
 			for(int i=0;i<players.size();i++) {
@@ -550,30 +538,34 @@ public class CatteBoard extends Board implements Serializable {
 		isFinished=false;
 		currTurn=0;
 		requestBanker.clear();
+		for(Player p : players) {
+			p.setBetMoney(0);
+			p.setTakeCard(null);
+		}
 	}
 
-	public void betsMoney(long betmoney,ServiceContract serviceContract, Table table, int playerId) {
+	public void betsMoney(long betmoney,ServiceContract serviceContract, Table table, int playerId,long betmoney1) {
 		// TODO Auto-generated method stub
+		// số tiền cược nhỏ hơn mark thì bằng mark
+		// số tiền cược lớn hơn AG thì bằng AG
+		// số tiền cược lớn hơn AG của barker thì == AG barker
 		try {
 			int index = getIndexPlayer(playerId);
-			players.get(index).setBetMoney(betmoney);
-			if(betmoney<Mark) {
+			players.get(index).setBetMoney(betmoney1);
+			if(betmoney1<Mark) {
 				players.get(index).setBetMoney(Mark);
-			}
-			//set tự đặt cược sau 
-			getschuduleAction(table, serviceContract, EVT.AUTO_BETS_MONEY, TIME_WAIT_START);
-			// check so tien toi da duoc dat
-			if(betmoney>players.get(getIndexBarker()).getAG()) {
+			}else if(betmoney1>players.get(getIndexBarker()).getAG()) {
 				players.get(index).setBetMoney(players.get(getIndexBarker()).getAG());
+			}else if(betmoney1>players.get(getIndexPlayer(playerId)).getAG()) {
+				players.get(index).setBetMoney(players.get(getIndexPlayer(playerId)).getAG());
 			}
-			Packet packet = new Packet(EVT.DATA_BETS_MONEY, players.get(index).getUsername(), players.get(index).getBetMoney()+"");
-			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(playerId, table.getId(),packet ));
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error(e.getMessage(),e);
 		}
 	}
-	public void setAutobetMoney() {
+	/*
+	public void setAutobetMoney(Table table) {
 		for(Player p : players) {
 			if (p.getBetMoney()==0) {
 				p.setBetMoney(Mark);
@@ -587,8 +579,11 @@ public class CatteBoard extends Board implements Serializable {
 			}else if(p.getBetMoney() < players.get(getIndexBarker()).getAG()){
 				p.setBetMoney(players.get(getIndexBarker()).getAG());
 			}
+			Packet packet = new Packet(EVT.DATA_BETS_MONEY,p.getUsername(),p.getBetMoney());
+			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
 		}
 	}
+	*/
 	public int getIndexPlayer(int playerId) {
 		for(int i=0;i<players.size();i++) {
 			if(playerId==players.get(i).getUserid()) {
@@ -620,6 +615,8 @@ public class CatteBoard extends Board implements Serializable {
 				// chia thêm lá bài với người chơi chọn nhận thêm
 				takeCardFromListCard(playerId);
 				players.get(getIndexPlayer(playerId)).setFinish(true);
+				Packet packet = new Packet(take, players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getArrCard().get(2) );
+				table.getScheduler().cancelScheduledAction(schedule);
 			}
 			}	
 		} catch (Exception e) {
@@ -679,7 +676,7 @@ public class CatteBoard extends Board implements Serializable {
 			return;
 		}
 		if(checkFinish()) {
-			getschuduleAction(table, serviceContract, EVT.OBJECT_FINESHED, 2000);
+			getschuduleAction(table, serviceContract, EVT.OBJECT_FINESHED, 0);
 		}
 		// từng người chơi lấy bài
 		currTurn = getIndexBarker();
@@ -689,11 +686,14 @@ public class CatteBoard extends Board implements Serializable {
 			}
 			Packet packet = new Packet(EVT.DATA_TAKE_CARD,players.get(currTurn).getUsername(), players.get(currTurn).isTakeCard());	
 			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
-			currTurn=getNextTurn();
-			getschuduleAction(table, serviceContract, EVT.AUTO_CANCEL_THREE_CARD, TIME_WAIT_CANCEL_CARD);
 			
+			GameObjectAction action1 = new GameObjectAction(table.getId());
+			action1.setAttachment(EVT.TIMES_OUT_TAKE_CARD);
+			schedule= table.getScheduler().scheduleAction(action, TIME_WAIT_CANCEL_CARD);
+			currTurn=getNextTurn();
 		}
-		
+		Packet packet = new Packet(EVT.DATA_OPEN_CARDS,"lat bai");
+		gameStatus=gameStatus.FINISHED;
 		getschuduleAction(table, serviceContract, EVT.OBJECT_FINESHED, TIME_WAIT_CANCEL_CARD);
 	}
 	
@@ -703,11 +703,46 @@ public class CatteBoard extends Board implements Serializable {
 		return nextPlayer;
 	}
 
-	public void autoCancelThreeCard(Table table, ServiceContract serviceContract) {
+	public void timesOutTakeCard(Table table, ServiceContract serviceContract) {
 		// TODO Auto-generated method stub
 		if(players.get(currTurn).isTakeCard() == null) {
 			players.get(currTurn).setTakeCard("No");
 		}
+		Packet packet = new Packet(EVT.TIMES_OUT_TAKE_CARD,"Khong lay them bai");
+		table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(players.get(currTurn).getUserid(), tableId, packet));
+		players.get(currTurn).setFinish(true);
+		
+	}
+
+	public void startBetsMoney(ServiceContract serviceContract, Table table, int playerId) {
+		// TODO Auto-generated method stub
+		if( gameStatus != gameStatus.FINISHED || gameStatus!= gameStatus.WAIT_FOR_START) {
+			return;
+		}
+		Packet packet = new Packet(EVT.CLIENT_BETS_MONEY,players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getBetMoney());
+		table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(playerId, tableId, packet));
+		
+		getschuduleAction(table, serviceContract, EVT.TIMES_OUT_BETS, TIME_WAIT_BETS);
+	}
+
+	public void timesOutBets(Table table, ServiceContract serviceContract) {
+		// TODO Auto-generated method stub
+		// set tu dat cuoc neu players ko dat
+		// chia bai va gui thong bao la bai cho nguoi choi
+		arrCardChia = getRandomCard();
+		divideTurnOneCard();
+		for(Player p : players) {
+			if(p.getBetMoney()==0) {
+				p.setBetMoney(Mark);
+			}
+			// gui thong bao la bai
+			PacketCard packet = new PacketCard(p.getUsername(), p.getArrCard().size(), p.getArrCard());
+			table.getNotifier().notifyPlayer(p.getUserid(), ShanGameUtil.toDataAction(p.getUserid(), table.getId(), packet));
+
+			
+		}
+
+		
 	}
 
 }

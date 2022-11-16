@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -78,6 +79,7 @@ public abstract class Board implements Serializable{
     protected Date idleTime = new Date();
     public final static int TIME_WAIT_START = 5000;
     public final static int TIME_WAIT_CANCEL_CARD = 5000;
+    public final static int TIME_WAIT_BETS = 5000;
     /**
      * mức cược bàn
      */
@@ -103,7 +105,7 @@ public abstract class Board implements Serializable{
     public int round;
     private boolean flagDestroy = false;
     private final static int TIME_WAIT_BETS_MONEY = 8000;
-    
+    public UUID schedule;
     
     public Board() {
         initBoard();

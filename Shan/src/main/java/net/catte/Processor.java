@@ -43,10 +43,13 @@ public class Processor implements GameProcessor{
 				int pidKickPlayer = board.KickTable(action.getPlayerId());
 				board.KickTable(action, table);  
 				break;
-			case EVT.DATA_BETS_MONEY:
+			case EVT.DATA_START_BETS_MONEY:
+				board.startBetsMoney(this.game.getServiceContract(),table,action.getPlayerId());
+				break;
+			case EVT.CLIENT_BETS_MONEY:
 				//{"evt","username","betsmoney"}
 				long betmoney = je.get("betmoney").getAsLong();
-				board.betsMoney(betmoney,this.game.getServiceContract(),table,action.getPlayerId());
+				board.betsMoney(betmoney,this.game.getServiceContract(),table,action.getPlayerId(),betmoney);
 				break;
 			case EVT.DATA_TAKE_CARD:
 				//{"evt":"takeCard","take":"Yes/No"}
@@ -66,7 +69,6 @@ public class Processor implements GameProcessor{
 		}
 	}
 
-	
 	@Override
 	public void handle(GameObjectAction goa, Table table) {
 		// TODO Auto-generated method stub 
@@ -80,11 +82,10 @@ public class Processor implements GameProcessor{
 		case EVT.OBJECT_FINESHED:
 			board.finishedGame(this.game.getServiceContract(), table);
 			break;
-		case EVT.AUTO_BETS_MONEY:
-			board.setAutobetMoney();
-		case EVT.AUTO_CANCEL_THREE_CARD:
-			board.autoCancelThreeCard(table, this.game.getServiceContract());
-			
+		case EVT.TIMES_OUT_TAKE_CARD:
+			board.timesOutTakeCard(table, this.game.getServiceContract());
+		case EVT.TIMES_OUT_BETS:
+			board.timesOutBets(table, this.game.getServiceContract());
 		default:
 			break;
 		}

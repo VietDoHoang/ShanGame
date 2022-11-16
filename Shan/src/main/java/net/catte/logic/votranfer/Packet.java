@@ -41,13 +41,15 @@ public class Packet implements Serializable{
     public Packet(String evt, String username, List<Card> card, int point) {
     	this.evt=evt;
     	this.userName=username;
-    	this.card=card;
+    	this.cards=card;
     	this.Point=point; 
     }
+    
     public Packet(String evt, String username, Long ag, int round) {
     	this.evt=evt;
     	this.userName=username;
-    	this.card=card;
+    	this.AG=ag;
+    	this.round=round;
     	
     }
     //packet betsmoney
@@ -59,12 +61,17 @@ public class Packet implements Serializable{
     // packet listCard
     public Packet(String evt, List<Card> listcard) {
     	this.evt=evt;
-    	this.card=listcard;
+    	this.cards=listcard;
     }
     public Packet(String evt, String username, boolean take) {
     	this.evt=evt;
     	this.userName=username;
     	this.take=take;
+    }
+    public Packet(String evt, String username, Card card) {
+    	this.evt=evt;
+    	this.userName=username;
+    	this.card=card;
     }
 
     private String evt;
@@ -73,13 +80,13 @@ public class Packet implements Serializable{
     private int pid;
     private String userName;
     private String typeWin;
-    private List<Card> card;
+    private List<Card> cards;
     private int Point;
     private long AG;
     private long round;
     private long betmoney;
     private boolean take;
-    
+    private Card card;
     public int getPid() {
         return pid;
     }
