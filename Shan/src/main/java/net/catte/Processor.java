@@ -43,9 +43,11 @@ public class Processor implements GameProcessor{
 				int pidKickPlayer = board.KickTable(action.getPlayerId());
 				board.KickTable(action, table);  
 				break;
+				/*
 			case EVT.DATA_START_BETS_MONEY:
 				board.startBetsMoney(this.game.getServiceContract(),table,action.getPlayerId());
 				break;
+				*/
 			case EVT.CLIENT_BETS_MONEY:
 				//{"evt","username","betsmoney"}
 				long betmoney = je.get("betmoney").getAsLong();
@@ -61,8 +63,6 @@ public class Processor implements GameProcessor{
 				Boolean request = je.get("request").getAsBoolean();
 				board.sendResquestBecomeBanker(this.game.getServiceContract(),table,action.getPlayerId(),request);
 				break;
-			case EVT.DATA_SECOND_TURN:
-				board.secondTurn(this.game.getServiceContract(),table,action);
 			default:
 				break;
 			}
@@ -86,6 +86,8 @@ public class Processor implements GameProcessor{
 			board.timesOutTakeCard(table, this.game.getServiceContract());
 		case EVT.TIMES_OUT_BETS:
 			board.timesOutBets(table, this.game.getServiceContract());
+		case EVT.DATA_SECOND_TURN:
+			board.secondTurn(this.game.getServiceContract(),table,goa);
 		default:
 			break;
 		}

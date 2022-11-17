@@ -89,8 +89,9 @@ public class CatteBoard extends Board implements Serializable {
 				}
 			}
 			//gui event start bet, chia bài
-			Packet packetStartBet = new Packet(EVT.DATA_START_BETS_MONEY, "start bets");
+			Packet packetStartBet = new Packet(EVT.CLIENT_BETS_MONEY, "start bets");
 			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(players.size(), tableId, packetStartBet));
+			getschuduleAction(table, serviceContract, EVT.TIMES_OUT_BETS, TIME_WAIT_BETS);
 			
 			//check số lương người chơi là SHAN
 			int numberplayerShan=0;
@@ -101,6 +102,9 @@ public class CatteBoard extends Board implements Serializable {
 				for(Player p : players) {
 					p.setFinish(true);
 				}
+				Packet packet = new Packet(EVT.OBJECT_FINESHED, "barker is Shan");
+				table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
+				
 				GameObjectAction action1 = new GameObjectAction(table.getId());
 				action1.setAttachment(EVT.OBJECT_FINESHED);
 				table.getScheduler().scheduleAction(action1, 2000);
@@ -112,6 +116,9 @@ public class CatteBoard extends Board implements Serializable {
 				for(Player p : players) {
 					p.setFinish(true);
 				}
+				Packet packet = new Packet(EVT.OBJECT_FINESHED, "All players are Shan");
+				table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
+				
 				GameObjectAction action1 = new GameObjectAction(table.getId());
 				action1.setAttachment(EVT.OBJECT_FINESHED);
 				table.getScheduler().scheduleAction(action1, 2000);
@@ -129,6 +136,8 @@ public class CatteBoard extends Board implements Serializable {
 			gameStatus= gameStatus.SECONDTURN;
 			Packet packet  =new Packet(EVT.DATA_SECOND_TURN,table.getId()+"");
 			
+			getschuduleAction(table, serviceContract, EVT.DATA_SECOND_TURN, 0);
+			return;
 			
 			
 		}catch(Exception e) {
@@ -559,6 +568,8 @@ public class CatteBoard extends Board implements Serializable {
 			}else if(betmoney1>players.get(getIndexPlayer(playerId)).getAG()) {
 				players.get(index).setBetMoney(players.get(getIndexPlayer(playerId)).getAG());
 			}
+			Packet packet = new Packet(EVT.CLIENT_BETS_MONEY,players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getBetMoney());
+			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(playerId, tableId, packet));
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error(e.getMessage(),e);
@@ -615,7 +626,7 @@ public class CatteBoard extends Board implements Serializable {
 				// chia thêm lá bài với người chơi chọn nhận thêm
 				takeCardFromListCard(playerId);
 				players.get(getIndexPlayer(playerId)).setFinish(true);
-				Packet packet = new Packet(take, players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getArrCard().get(2) );
+				Packet packet = new Packet(EVT.CLIENT_CARD_THREE, players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getArrCard().get(2) );
 				table.getScheduler().cancelScheduledAction(schedule);
 			}
 			}	
@@ -670,7 +681,7 @@ public class CatteBoard extends Board implements Serializable {
 		}
 	}
 
-	public void secondTurn(ServiceContract serviceContract, Table table, GameDataAction action) {
+	public void secondTurn(ServiceContract serviceContract, Table table,GameObjectAction action) {
 		// TODO Auto-generated method stub
 		if(gameStatus != gameStatus.SECONDTURN) {
 			return;
@@ -683,10 +694,11 @@ public class CatteBoard extends Board implements Serializable {
 		for(int i=0;i<players.size();i++) {
 			if(players.get(currTurn).isShan()) {
 				currTurn = getNextTurn();
+				continue;
 			}
-			Packet packet = new Packet(EVT.DATA_TAKE_CARD,players.get(currTurn).getUsername(), players.get(currTurn).isTakeCard());	
+			Packet packet = new Packet(EVT.DATA_TAKE_CARD,players.get(currTurn).getUsername());	
 			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
-			
+			// tự động không lấy lá bài nếu quá 5s
 			GameObjectAction action1 = new GameObjectAction(table.getId());
 			action1.setAttachment(EVT.TIMES_OUT_TAKE_CARD);
 			schedule= table.getScheduler().scheduleAction(action, TIME_WAIT_CANCEL_CARD);
@@ -721,8 +733,7 @@ public class CatteBoard extends Board implements Serializable {
 		}
 		Packet packet = new Packet(EVT.CLIENT_BETS_MONEY,players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getBetMoney());
 		table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(playerId, tableId, packet));
-		
-		getschuduleAction(table, serviceContract, EVT.TIMES_OUT_BETS, TIME_WAIT_BETS);
+
 	}
 
 	public void timesOutBets(Table table, ServiceContract serviceContract) {
@@ -735,8 +746,12 @@ public class CatteBoard extends Board implements Serializable {
 			if(p.getBetMoney()==0) {
 				p.setBetMoney(Mark);
 			}
+			// gửi thông báo tự động cược với những người không cược
+			Packet packet = new Packet(EVT.AUTO_BETS_MONEY,p.getUsername(),p.getBetMoney());
+			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(p.getUserid(), tableId, packet));
+			
 			// gui thong bao la bai
-			PacketCard packet = new PacketCard(p.getUsername(), p.getArrCard().size(), p.getArrCard());
+			PacketCard packet1 = new PacketCard(EVT.CARD_OF_PLAYERS,p.getUsername(), p.getArrCard().size(), p.getArrCard());
 			table.getNotifier().notifyPlayer(p.getUserid(), ShanGameUtil.toDataAction(p.getUserid(), table.getId(), packet));
 
 			

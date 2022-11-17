@@ -12,10 +12,12 @@ public class EVT {
 	public static final String CLIENT_DISCONNECT			= "disltable";
 	public static final String CLIENT_NEW_BANKER			= "NewBanker";
 	public static final String CLIENT_FINISHED				= "clientFinished";
+	public static final String CLIENT_CARD_THREE			="ClientCardThree";
 	
 	public static final String TIMES_OUT_BETS				="TimesOutBets";
 	public static final String TIMES_OUT_TAKE_CARD			="TimeOutTakeCard";
-	public static final String CLIENT_BETS_MONEY				= "autoBetsMoney";
+	public static final String CLIENT_BETS_MONEY				= "ClientBetsMoney";
+	public static final String AUTO_BETS_MONEY				="AutoBetsMoney";
 	public static final String AUTO_START_GAME				= "autoStartGame";
 	public static final String PLAY_TIME_OUT				= "playerTimeOut";
 	public static final String DEAL_CARD_TIME_OUT			= "dealCardTimeOut";
@@ -32,7 +34,7 @@ public class EVT {
 	public static final String DATA_ADD_REQUEST_BECOME_BANKER	="addRequestBecomeBanker";
 	public static final String DATA_OPEN_CARDS				="openCards";
 	
-	
+	public static final String CARD_OF_PLAYERS				="CardOfPlayer";
 	public static final String OBJECT_AUTO_START			="objectAuToStart";
 	public static final String OBJECT_FINESHED				="objectFINISH";
 	public static final String OBJECT_EMPTY_BANKER			="objectEmptyBanker";

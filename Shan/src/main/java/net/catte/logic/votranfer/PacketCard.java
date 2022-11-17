@@ -7,12 +7,14 @@ import net.catte.logic.vo.Card;
 
 public class PacketCard implements Serializable{
 
-	public PacketCard(String username, int countcard,List<Card> card) {
+	public PacketCard(String evt, String username, int countcard,List<Card> card) {
 		// TODO Auto-generated constructor stub
+		this.evt=evt;
 		this.userName=username;
 		this.countCard=countcard;
 		this.card=card;
 	}
+	private String evt;
 	private int countCard;
 	private List<Card> card;
 	private String userName;
