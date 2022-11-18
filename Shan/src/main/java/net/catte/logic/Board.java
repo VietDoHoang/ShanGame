@@ -101,7 +101,7 @@ public abstract class Board implements Serializable{
     
     protected List<Card> arrCardChia  = new ArrayList<>();;
     public static int GAMEID;
-    public int currTurn;
+    public int currTurn=getIndexBarker();
     public int round;
     private boolean flagDestroy = false;
     private final static int TIME_WAIT_BETS_MONEY = 8000;
@@ -384,6 +384,15 @@ public abstract class Board implements Serializable{
 			goa.setAttachment(packet);
 			return goa;
 		}
+	}
+	public int getIndexBarker() {
+		for(int i=0;i<players.size();i++) {
+			if(players.get(i).getUserid()==id_barker) {
+				return i;
+			}
+		}
+		return 0;
+		
 	}
 
 	public List<Player> getPlayers() {

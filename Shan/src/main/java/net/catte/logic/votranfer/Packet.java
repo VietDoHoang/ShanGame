@@ -27,6 +27,10 @@ public class Packet implements Serializable{
         this.pid = pid;
         this.userName = userName;
     }
+    public Packet(String evt, int userId) {
+        this.evt = evt;
+        this.pid = userId;
+    }
 
     public Packet(String evt, int timeAction, int pid) {
         this.evt = evt;

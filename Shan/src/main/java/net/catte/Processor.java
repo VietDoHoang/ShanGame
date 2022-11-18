@@ -43,11 +43,7 @@ public class Processor implements GameProcessor{
 				int pidKickPlayer = board.KickTable(action.getPlayerId());
 				board.KickTable(action, table);  
 				break;
-				/*
-			case EVT.DATA_START_BETS_MONEY:
-				board.startBetsMoney(this.game.getServiceContract(),table,action.getPlayerId());
-				break;
-				*/
+
 			case EVT.CLIENT_BETS_MONEY:
 				//{"evt","username","betsmoney"}
 				long betmoney = je.get("betmoney").getAsLong();
