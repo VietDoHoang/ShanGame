@@ -98,7 +98,7 @@ public class CatteBoard extends Board implements Serializable {
 			logger.error(e.getMessage(), e);
 		}
 	}
-	private void checkFinishedSoon(Table table) {
+	private boolean checkFinishedSoon(Table table) {
 		int numberplayerShan=0;
 		
 		// finish game neu barker la pok
@@ -113,7 +113,7 @@ public class CatteBoard extends Board implements Serializable {
 			GameObjectAction action1 = new GameObjectAction(table.getId());
 			action1.setAttachment(EVT.OBJECT_FINESHED);
 			table.getScheduler().scheduleAction(action1, 2000);
-			return;
+			return true;
 		}
 		// finish game neu tat ca nguoi choi la pok
 		if(numberplayerShan==players.size()-1) {
@@ -127,8 +127,9 @@ public class CatteBoard extends Board implements Serializable {
 			GameObjectAction action1 = new GameObjectAction(table.getId());
 			action1.setAttachment(EVT.OBJECT_FINESHED);
 			table.getScheduler().scheduleAction(action1, 2000);
-			return;
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -607,7 +608,8 @@ public class CatteBoard extends Board implements Serializable {
 				// chia thêm lá bài với người chơi chọn nhận thêm
 				takeCardFromListCard(playerId);
 				players.get(getIndexPlayer(playerId)).setFinish(true);
-				Packet packet = new Packet(EVT.CLIENT_CARD_THREE, players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getArrCard().get(2) );
+				Packet packet = new Packet(EVT.CLIENT_CARD_THREE, players.get(getIndexPlayer(playerId)).getUsername(),players.get(getIndexPlayer(playerId)).getArrCard().get(2),
+						players.get(getNextTurn()).getUserid());
 				// hủy EVT tự chọn
 				table.getScheduler().cancelScheduledAction(players.get(getIndexPlayer(playerId)).getEvtTimeOut());
 				currTurn=getNextTurn();
@@ -679,9 +681,10 @@ public class CatteBoard extends Board implements Serializable {
 			return;
 		}
 		if(players.get(currTurn).isShan()) {
-			currTurn=getNextTurn();
-			Packet packet = new Packet(EVT.DATA_SECOND_TURN,players.get(currTurn).getUsername());	
+			Packet packet = new Packet(EVT.CLIENT_IS_SHAN,players.get(currTurn).getUsername(),players.get(currTurn).getUserid());	
 			table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(0, table.getId(), packet));
+			currTurn=getNextTurn();
+			getschuduleAction(table, serviceContract, EVT.DATA_SECOND_TURN, 0);
 			return;
 		}
 		// gửi thống báo lấy bài cho players["evt":DATA_TAKECARD;"pid":userid]
@@ -706,7 +709,7 @@ public class CatteBoard extends Board implements Serializable {
 		if(players.get(currTurn).isTakeCard() == null) {
 			players.get(currTurn).setTakeCard("No");
 		}
-		Packet packet = new Packet(EVT.TIMES_OUT_TAKE_CARD,"Khong lay them bai");
+		Packet packet = new Packet(EVT.TIMES_OUT_TAKE_CARD,"Khong lay them bai",players.get(getNextTurn()).getUserid());
 		table.getNotifier().notifyAllPlayers(ShanGameUtil.toDataAction(players.get(currTurn).getUserid(), tableId, packet));
 		players.get(currTurn).setFinish(true);
 		currTurn=getNextTurn();
@@ -742,7 +745,9 @@ public class CatteBoard extends Board implements Serializable {
 			PacketCard packet1 = new PacketCard(EVT.CARD_OF_PLAYERS,p.getUsername(), p.getArrCard().size(), p.getArrCard());
 			table.getNotifier().notifyPlayer(p.getUserid(), ShanGameUtil.toDataAction(p.getUserid(), table.getId(), packet));			
 		}
-		checkFinishedSoon(table);
+		if(checkFinishedSoon(table)) {
+			return;
+		}
 		
 		// gửi thông báo nếu người chơi là bài pok
 		for(Player p : players) {

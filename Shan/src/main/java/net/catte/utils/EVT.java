@@ -13,6 +13,7 @@ public class EVT {
 	public static final String CLIENT_NEW_BANKER			= "NewBanker";
 	public static final String CLIENT_FINISHED				= "clientFinished";
 	public static final String CLIENT_CARD_THREE			="ClientCardThree";
+	public static final String CLIENT_IS_SHAN				="ClientIsShan";
 	
 	public static final String TIMES_OUT_BETS				="TimesOutBets";
 	public static final String TIMES_OUT_TAKE_CARD			="TimeOutTakeCard";
