@@ -17,6 +17,10 @@ import net.catte.logic.vo.Card;
  */
 public class Packet implements Serializable{
 
+	public Packet(String evt) {
+		this.evt=evt;
+	}
+	
 	 public Packet(String evt,String data){
 	        this.evt = evt;
 	        this.data = data;

@@ -23,6 +23,7 @@ public class Processor implements GameProcessor{
     public Processor(GameImpl game) {
         this.game = game;
     }
+    //  làm lại cái gói Tin
 	@Override
 	public void handle(GameDataAction action, Table table) {
 		// TODO Auto-generated method stub
